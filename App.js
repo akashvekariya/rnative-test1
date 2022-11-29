@@ -1,31 +1,28 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
+import GoalItem from './components/GoalItem';
+import GoalInput from './components/GoalInput';
 
 export default function App() {
-	const [enteredGoalText, setEnteredGoalText] = useState('');
+	
 	const [courseGoals, setCourseGoals] = useState([]);
 
-	const goalInputHandler = (value) => {
-		setEnteredGoalText(value);
-	};
-
-	const addGoalHandler = (value) => {
-		setCourseGoals(currentCourseGoals => [...currentCourseGoals, enteredGoalText]);
+	const addGoalHandler = goalText => {
+		setCourseGoals(currentCourseGoals => [
+			...currentCourseGoals, 
+			{ key: Math.random().toString(), value: goalText }
+		]);
 	};
 
 	return (
 		<View style={styles.appContainer}>
 			<View style={styles.inputContainer}>
-				<TextInput style={styles.textInput} placeholder="Your course goal" onChangeText={goalInputHandler}></TextInput>
-				<Button title="Add goal" onPress={addGoalHandler}/>
+				<GoalInput onAddGoal={addGoalHandler}/>
 			</View>
 			<View style={styles.goalsContainer}>
-				<ScrollView>
-					<Text>{courseGoals.map((goal) => 
-						
-						<Text key={goal}>{goal}</Text>
-					)}</Text>
-				</ScrollView>
+				<FlatList data={courseGoals} renderItem={itemData => 
+					<GoalItem title={itemData.item.value} />
+				}/>
 			</View>
 		</View>
 	);
@@ -34,33 +31,11 @@ export default function App() {
 const styles = StyleSheet.create({
 	appContainer: {
 		flex: 1,
-		paddingTop: 50,
+		paddingTop: 60,
 		paddingHorizontal: 16,
-	},
-	inputContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginBottom: 24,
-		borderBottomWidth: 1,
-		borderBottomColor: '#ccc',
-	},
-	textInput: {
-		borderWidth: 1,
-		borderColor: '#ccc',
-		marginRight: 8,
-		padding: 8,
-		width: '70%',
 	},
 	goalsContainer: {
 		flex: 5,
 	},
-	goals: {
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-		backgroundColor: '#ccc',
-		borderRadius: 5,
-		marginBottom: 8,
-	}
+	
 });
